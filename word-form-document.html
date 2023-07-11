@@ -45,37 +45,72 @@
     }
 
     function generate() {
+      // Get the value of the new form inputs you want to add
+      // COMMENT: Add new form inputs here
+      
       const dateInput = document.getElementById("dateInput").value;
       const formattedDate = formatDate(new Date(dateInput));
-      const checkbox1 = document.getElementById("checkbox1").checked ? "Option 1" : "";
-      const checkbox2 = document.getElementById("checkbox2").checked ? "Option 2" : "";
-      const checkbox3 = document.getElementById("checkbox3").checked ? "Option 3" : "";
-      const textInput = document.getElementById("textInput").value;
+
+    const checkboxes = [];
+if (checkbox1) checkboxes.push("Option 1");
+if (checkbox2) checkboxes.push("Option 2");
+if (checkbox3) checkboxes.push("Option 3");
+
+
+      // GENERATED STRING OF THE CHECKED ITEMS, DIVIDED BY COMMA, THIS CAN BE REPLACED AS WISHED
+        const checkboxesText = checkboxes.length > 0 ? checkboxes.join(", ") : "";
 
       const doc = new docx.Document({
-        sections: [{
-          properties: {},
-          children: [
-            new docx.Paragraph({
-              children: [
-                new docx.TextRun("Date: " + formattedDate),
-              ],
-            }),
-            new docx.Paragraph({
-              children: [
-                new docx.TextRun("Checkboxes: " + checkbox1 + "|" + checkbox2 + checkbox3),
-              ],
-            }),
-            new docx.Paragraph({
-              children: [
-                new docx.TextRun("Text: " + textInput),
-              ],
-            }),
-          ],
-        }]
-      });
+  sections: [{
+    properties: {},
+    children: [
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun("Date: " + formattedDate),
+        ],
+      }),
 
-      const fileName = "meeting_" + formattedDate.replaceAll('/', '_') + ".docx";
+      
+        new docx.Paragraph({
+        // Set the header level to 1 for "Checkboxes" line
+        heading: docx.HeadingLevel.HEADING_1,
+        children: [
+          new docx.TextRun("Checkboxes:"),
+        ],
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun(checkboxesText),
+        ],
+      }),
+  
+      
+      new docx.Paragraph({   
+   //     EDIT TEXT FIELD: HeadingLevel.HEADING_1(2 or 3) 
+        heading: docx.HeadingLevel.HEADING_2,
+        children: [
+  // TEXT TO BE DISPLAYED AS HEADER
+          new docx.TextRun("Text:"),
+        ],
+      }),
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun(textInput),
+        ],
+      }),
+
+      
+   // END TEXT FIELD SAMPLE
+
+      
+    ],
+  }]
+});
+
+
+      // FILE NAME: Update "file_" to desired string
+      
+      const fileName = "file_" + formattedDate.replaceAll('/', '_') + ".docx";
 
       docx.Packer.toBlob(doc).then(blob => {
         saveAs(blob, fileName);
